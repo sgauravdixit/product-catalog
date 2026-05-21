@@ -1,0 +1,62 @@
+<div class="page-header">
+  <a routerLink="/products" class="back-link">← Back to Products</a>
+  <h1>Add New Product</h1>
+</div>
+
+<div class="form-container">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <div class="error-banner" *ngIf="error">{{ error }}</div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="name">Product Name *</label>
+        <input id="name" type="text" formControlName="name" placeholder="e.g. Wireless Headphones">
+        <span class="field-error" *ngIf="f['name'].touched && f['name'].errors?.['required']">Name is required</span>
+        <span class="field-error" *ngIf="f['name'].touched && f['name'].errors?.['minlength']">At least 2 characters required</span>
+      </div>
+
+      <div class="form-group">
+        <label for="category">Category *</label>
+        <select id="category" formControlName="category">
+          <option value="" disabled>Select a category</option>
+          <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+        </select>
+        <span class="field-error" *ngIf="f['category'].touched && f['category'].errors?.['required']">Category is required</span>
+      </div>
+
+      <div class="form-group">
+        <label for="price">Price ($) *</label>
+        <input id="price" type="number" formControlName="price" placeholder="0.00" min="0" step="0.01">
+        <span class="field-error" *ngIf="f['price'].touched && f['price'].errors?.['required']">Price is required</span>
+        <span class="field-error" *ngIf="f['price'].touched && f['price'].errors?.['min']">Price must be a positive number</span>
+      </div>
+
+      <div class="form-group">
+        <label for="stock">Stock Quantity *</label>
+        <input id="stock" type="number" formControlName="stock" placeholder="0" min="0">
+        <span class="field-error" *ngIf="f['stock'].touched && f['stock'].errors?.['required']">Stock is required</span>
+        <span class="field-error" *ngIf="f['stock'].touched && f['stock'].errors?.['min']">Stock must be 0 or more</span>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="image_url">Image URL *</label>
+        <input id="image_url" type="url" formControlName="image_url" placeholder="https://example.com/image.jpg">
+        <span class="field-error" *ngIf="f['image_url'].touched && f['image_url'].errors?.['required']">Image URL is required</span>
+      </div>
+
+      <div class="form-group full-width">
+        <label for="description">Description *</label>
+        <textarea id="description" formControlName="description" rows="4" placeholder="Describe the product..."></textarea>
+        <span class="field-error" *ngIf="f['description'].touched && f['description'].errors?.['required']">Description is required</span>
+        <span class="field-error" *ngIf="f['description'].touched && f['description'].errors?.['minlength']">At least 10 characters required</span>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <a routerLink="/products" class="btn-cancel">Cancel</a>
+      <button type="submit" class="btn-submit" [disabled]="submitting">
+        {{ submitting ? 'Adding...' : 'Add Product' }}
+      </button>
+    </div>
+  </form>
+</div>
