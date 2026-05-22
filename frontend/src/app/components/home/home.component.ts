@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
@@ -13,17 +13,30 @@ import { Product } from '../../models/product.model';
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   private productService = inject(ProductService);
   cart = inject(CartService);
 
-  allProducts = this.productService.getAll();
-  categories = ['All', ...this.productService.getCategories()];
+  allProducts: Product[] = [];
+  categories: string[] = ['All'];
   activeCategory = 'All';
   selectedProduct: Product | null = null;
   drawerQty = 1;
   toastVisible = false;
   toastMessage = '';
+  loading = true;
+  error = '';
+
+  ngOnInit(): void {
+    this.productService.getAll().subscribe({
+      next: products => { this.allProducts = products; this.loading = false; },
+      error: () => { this.error = 'Failed to load products.'; this.loading = false; }
+    });
+    this.productService.getCategories().subscribe({
+      next: cats => this.categories = ['All', ...cats],
+      error: () => {}
+    });
+  }
 
   get filtered(): Product[] {
     if (this.activeCategory === 'All') return this.allProducts;
@@ -50,13 +63,8 @@ export class HomeComponent {
     document.body.style.overflow = '';
   }
 
-  incrementQty(): void {
-    this.drawerQty++;
-  }
-
-  decrementQty(): void {
-    if (this.drawerQty > 1) this.drawerQty--;
-  }
+  incrementQty(): void { this.drawerQty++; }
+  decrementQty(): void { if (this.drawerQty > 1) this.drawerQty--; }
 
   addToCartFromDrawer(): void {
     if (!this.selectedProduct) return;

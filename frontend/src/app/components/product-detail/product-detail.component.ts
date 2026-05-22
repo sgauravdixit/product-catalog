@@ -21,10 +21,15 @@ export class ProductDetailComponent implements OnInit {
   product: Product | undefined;
   qty = 1;
   toastVisible = false;
+  loading = true;
+  error = '';
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.product = this.productService.getById(id);
+    this.productService.getById(id).subscribe({
+      next: p => { this.product = p; this.loading = false; },
+      error: () => { this.error = 'Product not found.'; this.loading = false; }
+    });
   }
 
   increment(): void { this.qty++; }

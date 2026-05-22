@@ -5,6 +5,7 @@ import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
 import { CartService } from '../../services/cart.service';
 import { OrderService } from '../../services/order.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-checkout',
@@ -17,6 +18,7 @@ export class CheckoutComponent {
   private router = inject(Router);
   cart = inject(CartService);
   private orderService = inject(OrderService);
+  private auth = inject(AuthService);
 
   firstName = '';
   lastName = '';
@@ -26,8 +28,9 @@ export class CheckoutComponent {
   city = '';
   zip = '';
   country = 'United States';
-
   shipping = 'standard';
+  loading = false;
+  error = '';
 
   get shippingCost(): number {
     if (this.cart.subtotal() >= 50) return 0;
@@ -39,9 +42,18 @@ export class CheckoutComponent {
   }
 
   confirmOrder(): void {
+    this.loading = true;
+    this.error = '';
     const fullAddress = `${this.address || '123 Main St'}, ${this.city || 'New York'}, ${this.zip || '10001'}, ${this.country}`;
-    this.orderService.placeOrder(this.cart.items(), this.shippingCost, fullAddress);
-    this.cart.clearCart();
-    this.router.navigate(['/confirmation']);
+    this.orderService.placeOrder(this.cart.items(), this.shippingCost, fullAddress).subscribe({
+      next: () => {
+        this.cart.clearCart();
+        this.router.navigate(['/confirmation']);
+      },
+      error: () => {
+        this.loading = false;
+        this.error = 'Failed to place order. Please try again.';
+      }
+    });
   }
 }

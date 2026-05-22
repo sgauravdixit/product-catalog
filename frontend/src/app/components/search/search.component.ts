@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HeaderComponent } from '../shared/header/header.component';
@@ -14,16 +14,24 @@ import { Product } from '../../models/product.model';
   templateUrl: './search.component.html',
   styleUrl: './search.component.css'
 })
-export class SearchComponent {
+export class SearchComponent implements OnInit {
   private productService = inject(ProductService);
   cart = inject(CartService);
 
   query = '';
   results: Product[] = [];
+  allProducts: Product[] = [];
   searched = false;
   toastVisible = false;
 
   suggestions = ['Headphones', 'Laptop', 'Jacket', 'Books', 'Coffee'];
+
+  ngOnInit(): void {
+    this.productService.getAll().subscribe({
+      next: products => this.allProducts = products,
+      error: () => {}
+    });
+  }
 
   cardClass(i: number): string {
     const c = ['', 'gs-pcard--mint', 'gs-pcard--blush'];
@@ -31,7 +39,14 @@ export class SearchComponent {
   }
 
   doSearch(): void {
-    this.results = this.productService.search(this.query);
+    const q = this.query.toLowerCase().trim();
+    this.results = q
+      ? this.allProducts.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          p.category.toLowerCase().includes(q) ||
+          p.description.toLowerCase().includes(q)
+        )
+      : [];
     this.searched = true;
   }
 

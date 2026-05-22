@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-register',
@@ -10,13 +12,28 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
+  private router = inject(Router);
+  private auth = inject(AuthService);
+  private cartService = inject(CartService);
+
   name = '';
   email = '';
   password = '';
-
-  constructor(private router: Router) {}
+  loading = false;
+  error = '';
 
   register(): void {
-    this.router.navigate(['/home']);
+    this.loading = true;
+    this.error = '';
+    this.auth.register(this.name, this.email, this.password).subscribe({
+      next: () => {
+        this.cartService.loadCart();
+        this.router.navigate(['/home']);
+      },
+      error: (err) => {
+        this.loading = false;
+        this.error = err.error?.detail ?? 'Registration failed. Please try again.';
+      }
+    });
   }
 }

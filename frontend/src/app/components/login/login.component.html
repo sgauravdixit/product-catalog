@@ -60,9 +60,12 @@
             <input type="password" [(ngModel)]="password" placeholder="••••••••">
           </div>
 
+          @if (error) {
+            <div style="background:#fee2e2;border:1px solid #fca5a5;border-radius:8px;padding:10px 14px;font-family:var(--font-body);font-size:13px;color:#b91c1c;">{{ error }}</div>
+          }
           <div class="gs-auth__row">
-            <button class="gs-btn gs-btn--primary" style="flex:1;justify-content:center;" (click)="login()">
-              Login
+            <button class="gs-btn gs-btn--primary" style="flex:1;justify-content:center;" (click)="login()" [disabled]="loading">
+              {{ loading ? 'Signing in…' : 'Login' }}
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
             </button>
           </div>
