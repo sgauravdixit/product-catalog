@@ -1,0 +1,80 @@
+<div class="app">
+  <header class="landing-header">
+    <div class="landing-header__inner">
+      <span class="landing-header__brand" routerLink="/">Gaurav's ShopMart</span>
+      <div class="landing-header__actions">
+        <button class="gs-header__signin" routerLink="/login">Login</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="gs-main">
+    <div class="gs-auth gs-auth--reverse">
+      <!-- Form panel -->
+      <div class="gs-auth__form">
+        <div class="gs-auth__intro">
+          <p class="gs-secthead__eyebrow">CREATE ACCOUNT</p>
+          <h1 class="gs-auth__title">Join the<br>ShopMart.</h1>
+          <p class="gs-auth__sub">Create your free account and start discovering extraordinary products.</p>
+        </div>
+
+        <div class="gs-auth__panel">
+          <div class="gs-field">
+            <label>Full name</label>
+            <input type="text" [(ngModel)]="name" placeholder="Gaurav Dixit">
+          </div>
+          <div class="gs-field">
+            <label>Email address</label>
+            <input type="email" [(ngModel)]="email" placeholder="you@example.com">
+          </div>
+          <div class="gs-field">
+            <label>Password</label>
+            <input type="password" [(ngModel)]="password" placeholder="Create a strong password">
+          </div>
+
+          <button class="gs-btn gs-btn--primary" style="justify-content:center;" (click)="register()">
+            Create Account
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </div>
+
+        <div class="gs-auth__altfoot">
+          Already have an account?
+          <span class="gs-auth__link" routerLink="/login">
+            Login
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- Brand panel -->
+      <div class="gs-auth__brand">
+        <div class="gs-auth__brandinner">
+          <div class="gs-auth__brandmark">Gaurav's<br>ShopMart</div>
+          <p class="gs-auth__brandeyebrow">JOIN TODAY</p>
+          <h2 class="gs-auth__brandtitle">Everything<br>you need,<br>all in one place.</h2>
+          <p class="gs-auth__brandsub">Create a free account and get instant access to 1,000+ products across all your favourite categories.</p>
+          <ul class="gs-auth__brandlist">
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Free shipping on orders over $50
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              30-day hassle-free returns
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Exclusive member-only discounts
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Secure, encrypted payments
+            </li>
+          </ul>
+          <p class="gs-auth__brandfoot">GAURAV'S SHOPMART · EST. 2024</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

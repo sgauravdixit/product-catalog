@@ -1,9 +1,25 @@
 import { Routes } from '@angular/router';
-import { ProductListComponent } from './components/product-list/product-list.component';
-import { AddProductComponent } from './components/add-product/add-product.component';
+import { LandingComponent } from './components/landing/landing.component';
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { HomeComponent } from './components/home/home.component';
+import { ProductDetailComponent } from './components/product-detail/product-detail.component';
+import { SearchComponent } from './components/search/search.component';
+import { CartComponent } from './components/cart/cart.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
+import { ConfirmationComponent } from './components/confirmation/confirmation.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/products', pathMatch: 'full' },
-  { path: 'products', component: ProductListComponent },
-  { path: 'add-product', component: AddProductComponent },
+  { path: '',             component: LandingComponent },
+  { path: 'login',        component: LoginComponent },
+  { path: 'register',     component: RegisterComponent },
+  { path: 'home',         component: HomeComponent },
+  { path: 'product/:id',  component: ProductDetailComponent },
+  { path: 'search',       component: SearchComponent },
+  { path: 'cart',         component: CartComponent },
+  { path: 'checkout',     component: CheckoutComponent },
+  { path: 'confirmation', component: ConfirmationComponent },
+  { path: 'profile',      component: ProfileComponent },
+  { path: '**',           redirectTo: '' },
 ];

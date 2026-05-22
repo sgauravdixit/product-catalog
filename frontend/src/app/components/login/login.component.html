@@ -1,0 +1,81 @@
+<div class="app">
+  <header class="landing-header">
+    <div class="landing-header__inner">
+      <span class="landing-header__brand" routerLink="/">Gaurav's ShopMart</span>
+      <div class="landing-header__actions">
+        <button class="gs-header__signin" routerLink="/register">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="gs-main">
+    <div class="gs-auth">
+      <!-- Brand panel -->
+      <div class="gs-auth__brand">
+        <div class="gs-auth__brandinner">
+          <div class="gs-auth__brandmark">Gaurav's<br>ShopMart</div>
+          <p class="gs-auth__brandeyebrow">WELCOME BACK</p>
+          <h2 class="gs-auth__brandtitle">Shop smarter,<br>live better.</h2>
+          <p class="gs-auth__brandsub">Sign in to access your cart, track orders, and discover thousands of products curated just for you.</p>
+          <ul class="gs-auth__brandlist">
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Exclusive member deals & early access
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Persistent cart across all devices
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Fast checkout with saved addresses
+            </li>
+            <li>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              Full order history & easy returns
+            </li>
+          </ul>
+          <p class="gs-auth__brandfoot">GAURAV'S SHOPMART · EST. 2024</p>
+        </div>
+      </div>
+
+      <!-- Form panel -->
+      <div class="gs-auth__form">
+        <div class="gs-auth__intro">
+          <p class="gs-secthead__eyebrow">MEMBER LOGIN</p>
+          <h1 class="gs-auth__title">Welcome<br>back.</h1>
+          <p class="gs-auth__sub">Enter your credentials to access your account.</p>
+        </div>
+
+        <div class="gs-auth__panel">
+          <div class="gs-field">
+            <label>Email address</label>
+            <input type="email" [(ngModel)]="email" placeholder="you@example.com">
+          </div>
+          <div class="gs-field">
+            <label>Password</label>
+            <input type="password" [(ngModel)]="password" placeholder="••••••••">
+          </div>
+
+          <div class="gs-auth__row">
+            <button class="gs-btn gs-btn--primary" style="flex:1;justify-content:center;" (click)="login()">
+              Login
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="gs-auth__altfoot">
+          Don't have an account?
+          <span class="gs-auth__link" routerLink="/register">
+            Sign Up
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

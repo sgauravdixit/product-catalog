@@ -1,0 +1,127 @@
+<div class="app">
+  <app-header></app-header>
+
+  <main class="gs-main">
+    <section class="gs-section--tight">
+      <!-- Page header -->
+      <div class="gs-pagehead">
+        <div>
+          <p class="gs-secthead__eyebrow">DISCOVER</p>
+          <h1 class="gs-pagehead__title">Catalog</h1>
+        </div>
+        <span class="gs-pagehead__count">{{ filtered.length }} products</span>
+      </div>
+
+      <!-- Category filter chips -->
+      <div class="gs-toolbar">
+        <div class="gs-chiprow">
+          @for (cat of categories; track cat) {
+            <button
+              class="gs-chip"
+              [class.gs-chip--active]="activeCategory === cat"
+              (click)="setCategory(cat)">
+              {{ cat }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <!-- Product grid -->
+      @if (filtered.length > 0) {
+        <div class="gs-pgrid">
+          @for (p of filtered; track p.id; let i = $index) {
+            <div class="gs-pcard {{ cardClass(i) }}">
+              <div class="gs-pcard__media">
+                <img [src]="p.image" [alt]="p.name" loading="lazy">
+                <span class="gs-pcard__cat">{{ p.category }}</span>
+                <button class="gs-pcard__heart">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+              </div>
+              <div class="gs-pcard__body">
+                @if (p.badge) {
+                  <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);">{{ p.badge }}</span>
+                }
+                <h3 class="gs-pcard__title">{{ p.name }}</h3>
+                <p class="gs-pcard__desc">{{ p.description }}</p>
+                <div class="gs-pcard__foot">
+                  <span class="gs-pcard__price">${{ p.price.toFixed(2) }}</span>
+                  <span class="gs-pcard__stock" [class.gs-pcard__stock--low]="p.stock < 5">
+                    {{ p.stock < 5 ? 'Low stock' : 'In Stock' }}
+                  </span>
+                </div>
+                <div class="gs-pcard__actions">
+                  <button class="gs-pcard__addbtn" (click)="openDrawer(p)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    View Details
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="gs-empty">
+          <h3>No products found</h3>
+          <p>Try selecting a different category.</p>
+          <button class="gs-btn gs-btn--primary" (click)="setCategory('All')">View All</button>
+        </div>
+      }
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+
+  <!-- Product detail drawer -->
+  @if (selectedProduct) {
+    <div class="gs-drawer-scrim" (click)="closeDrawer()"></div>
+    <div class="gs-drawer">
+      <div class="gs-drawer__head">
+        <h2 class="gs-drawer__title">Product Details</h2>
+        <button class="gs-iconbtn" style="color:var(--fg-default);" (click)="closeDrawer()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="gs-drawer__body">
+        <img [src]="selectedProduct.image" [alt]="selectedProduct.name" loading="lazy">
+        <div>
+          <span class="gs-drawer__product-cat">{{ selectedProduct.category }}</span>
+          @if (selectedProduct.badge) {
+            <span style="margin-left:8px;font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);">{{ selectedProduct.badge }}</span>
+          }
+          <h3 class="gs-drawer__product-name">{{ selectedProduct.name }}</h3>
+          <div class="gs-drawer__product-price">${{ selectedProduct.price.toFixed(2) }}</div>
+          <p style="font-size:13px;font-weight:600;color:var(--color-success);margin:0 0 12px;">
+            {{ selectedProduct.stock < 5 ? 'Low stock — ' + selectedProduct.stock + ' left' : 'In Stock' }}
+          </p>
+          <p class="gs-drawer__product-desc">{{ selectedProduct.description }}</p>
+        </div>
+      </div>
+      <div class="gs-drawer__foot">
+        <div class="gs-drawer__addrow">
+          <div class="gs-pdp__qty">
+            <button (click)="decrementQty()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+            <span>{{ drawerQty }}</span>
+            <button (click)="incrementQty()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+          </div>
+          <button class="gs-btn gs-btn--primary" (click)="addToCartFromDrawer()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Toast -->
+  @if (toastVisible) {
+    <div class="gs-toast">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      {{ toastMessage }}
+    </div>
+  }
+</div>

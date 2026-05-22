@@ -1,0 +1,13 @@
+.gs-form__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fg-default);
+  cursor: pointer;
+}
+.gs-form__back svg { width: 16px; height: 16px; }
+.gs-form__back:hover { opacity: 0.7; }
+.gs-pdp__info { display: flex; flex-direction: column; }

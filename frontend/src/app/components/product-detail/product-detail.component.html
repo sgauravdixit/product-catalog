@@ -1,0 +1,74 @@
+<div class="app">
+  <app-header></app-header>
+
+  <main class="gs-main">
+    <section class="gs-section">
+      @if (product) {
+        <div style="margin-bottom:24px;">
+          <span class="gs-form__back" routerLink="/home">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+            Back to Catalog
+          </span>
+        </div>
+
+        <div class="gs-pdp">
+          <div class="gs-pdp__media">
+            <img [src]="product.image" [alt]="product.name">
+          </div>
+
+          <div class="gs-pdp__info">
+            <p class="gs-pdp__cat">{{ product.category }}</p>
+            @if (product.badge) {
+              <span style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);display:block;margin-bottom:8px;">{{ product.badge }}</span>
+            }
+            <h1 class="gs-pdp__title">{{ product.name }}</h1>
+            <div class="gs-pdp__price">${{ product.price.toFixed(2) }}</div>
+            <p class="gs-pdp__stock" [style.color]="product.stock < 5 ? 'var(--color-danger)' : 'var(--color-success)'">
+              {{ product.stock < 5 ? 'Only ' + product.stock + ' left in stock' : 'In Stock' }}
+            </p>
+            <p class="gs-pdp__desc">{{ product.description }}</p>
+
+            <div class="gs-pdp__addrow">
+              <div class="gs-pdp__qty">
+                <button (click)="decrement()">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <span>{{ qty }}</span>
+                <button (click)="increment()">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+              </div>
+              <button class="gs-btn gs-btn--primary" (click)="addToCart()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Add to Cart
+              </button>
+              <button class="gs-btn gs-btn--secondary" routerLink="/cart">View Cart</button>
+            </div>
+
+            <dl class="gs-pdp__specs">
+              <div><dt>Category</dt><dd>{{ product.category }}</dd></div>
+              <div><dt>Stock</dt><dd>{{ product.stock }} units</dd></div>
+              <div><dt>SKU</dt><dd>SM-{{ product.id.toString().padStart(4, '0') }}</dd></div>
+              <div><dt>Shipping</dt><dd>Free over $50</dd></div>
+            </dl>
+          </div>
+        </div>
+      } @else {
+        <div class="gs-empty">
+          <h3>Product not found</h3>
+          <p>This product may no longer be available.</p>
+          <button class="gs-btn gs-btn--primary" routerLink="/home">Back to Catalog</button>
+        </div>
+      }
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+
+  @if (toastVisible) {
+    <div class="gs-toast">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      Added to cart!
+    </div>
+  }
+</div>

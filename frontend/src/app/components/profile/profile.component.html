@@ -1,0 +1,204 @@
+<div class="app">
+  <app-header></app-header>
+
+  <main class="gs-main">
+    <section class="gs-section--tight">
+      <div style="padding:32px 0 24px;">
+        <p class="gs-secthead__eyebrow">YOUR ACCOUNT</p>
+        <h1 class="gs-pagehead__title">Profile</h1>
+      </div>
+
+      <div class="gs-profile">
+        <!-- Sidebar -->
+        <div class="gs-profile__nav">
+          <div class="gs-profile__avatar">GD</div>
+          <div class="gs-profile__name">Gaurav Dixit</div>
+          <div class="gs-profile__email">gaurav.neu&#64;gmail.com</div>
+
+          <ul class="gs-profile__list">
+            @for (tab of tabs; track tab.id) {
+              <li>
+                <button
+                  class="gs-profile__navitem"
+                  [class.gs-profile__navitem--on]="activeTab === tab.id"
+                  (click)="setTab(tab.id)">
+                  @if (tab.id === 'overview') {
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                  }
+                  @if (tab.id === 'orders') {
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                  }
+                  @if (tab.id === 'addresses') {
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  }
+                  @if (tab.id === 'settings') {
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M4.93 4.93a10 10 0 0 1 14.14 14.14"/></svg>
+                  }
+                  {{ tab.label }}
+                </button>
+              </li>
+            }
+          </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="gs-profile__main">
+
+          <!-- Overview tab -->
+          @if (activeTab === 'overview') {
+            <div class="gs-secthead">
+              <div>
+                <p class="gs-secthead__eyebrow">DASHBOARD</p>
+                <h2 class="gs-secthead__title" style="font-size:40px;">Overview</h2>
+              </div>
+            </div>
+            <div class="gs-profile__cards">
+              <div class="gs-confirm__card">
+                <span class="gs-confirm__cardlabel">Total Orders</span>
+                <span class="gs-confirm__cardvalue">{{ lastOrder ? 1 : 0 }}</span>
+              </div>
+              <div class="gs-confirm__card gs-confirm__card--mint">
+                <span class="gs-confirm__cardlabel">Amount Spent</span>
+                <span class="gs-confirm__cardvalue">${{ lastOrder ? lastOrder.total.toFixed(2) : '0.00' }}</span>
+              </div>
+              <div class="gs-confirm__card gs-confirm__card--blush">
+                <span class="gs-confirm__cardlabel">Member Since</span>
+                <span class="gs-confirm__cardvalue" style="font-size:18px;">May 2024</span>
+              </div>
+            </div>
+
+            <div style="margin-top:40px;">
+              <p style="font-family:var(--font-body);font-size:15px;color:var(--fg-body);line-height:1.6;">
+                Welcome back, <strong>Gaurav</strong>! You're all set to explore thousands of products.
+                Check your order history, manage your addresses, or head to the catalog to discover something new.
+              </p>
+              <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+                <button class="gs-btn gs-btn--primary" routerLink="/home">Browse Catalog</button>
+                <button class="gs-btn gs-btn--secondary" (click)="setTab('orders')">My Orders</button>
+              </div>
+            </div>
+          }
+
+          <!-- Orders tab -->
+          @if (activeTab === 'orders') {
+            <div class="gs-secthead">
+              <div>
+                <p class="gs-secthead__eyebrow">HISTORY</p>
+                <h2 class="gs-secthead__title" style="font-size:40px;">My Orders</h2>
+              </div>
+            </div>
+
+            @if (lastOrder) {
+              <div class="gs-orderrow">
+                <div class="gs-orderrow__head">
+                  <div>
+                    <p style="font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);">ORDER</p>
+                    <h3 class="gs-orderrow__title">{{ lastOrder.orderNumber }}</h3>
+                  </div>
+                  <span class="gs-orderrow__status">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
+                    Processing
+                  </span>
+                </div>
+                <div class="gs-orderrow__items">
+                  @for (item of lastOrder.items; track item.product.id) {
+                    <div class="gs-orderrow__item">
+                      <div class="gs-orderrow__img">
+                        <img [src]="item.product.image" [alt]="item.product.name">
+                      </div>
+                      <div>
+                        <div class="gs-orderrow__iname">{{ item.product.name }}</div>
+                        <div class="gs-orderrow__imeta">Qty: {{ item.quantity }} · {{ item.product.category }}</div>
+                      </div>
+                      <div class="gs-orderrow__iprice">${{ (item.product.price * item.quantity).toFixed(2) }}</div>
+                    </div>
+                  }
+                </div>
+                <div class="gs-orderrow__foot">
+                  <div style="font-family:var(--font-body);font-size:14px;color:var(--fg-muted);">
+                    Total: <strong style="color:var(--fg-default);font-family:var(--font-display);">${{ lastOrder.total.toFixed(2) }}</strong>
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <div class="gs-empty">
+                <h3>No orders yet</h3>
+                <p>Once you place your first order it will appear here.</p>
+                <button class="gs-btn gs-btn--primary" routerLink="/home">Start Shopping</button>
+              </div>
+            }
+          }
+
+          <!-- Addresses tab -->
+          @if (activeTab === 'addresses') {
+            <div class="gs-secthead">
+              <div>
+                <p class="gs-secthead__eyebrow">SAVED</p>
+                <h2 class="gs-secthead__title" style="font-size:40px;">Addresses</h2>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div style="background:var(--bg-card-1);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;">
+                <span style="font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);">HOME</span>
+                <div style="font-family:var(--font-body);font-size:15px;line-height:1.6;color:var(--fg-default);">
+                  Gaurav Dixit<br>
+                  123 Main Street, Apt 4B<br>
+                  New York, NY 10001<br>
+                  United States
+                </div>
+                <div style="display:flex;gap:8px;margin-top:auto;">
+                  <button class="gs-btn gs-btn--secondary" style="font-size:13px;padding:8px 14px;">Edit</button>
+                </div>
+              </div>
+              <div style="background:transparent;border:1.5px dashed var(--color-ink);border-radius:12px;padding:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--fg-default);gap:8px;min-height:160px;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Add New Address
+              </div>
+            </div>
+          }
+
+          <!-- Settings tab -->
+          @if (activeTab === 'settings') {
+            <div class="gs-secthead">
+              <div>
+                <p class="gs-secthead__eyebrow">PREFERENCES</p>
+                <h2 class="gs-secthead__title" style="font-size:40px;">Settings</h2>
+              </div>
+            </div>
+            <div style="background:var(--bg-page);border:1.5px solid var(--color-ink);border-radius:12px;padding:32px;">
+              <div class="gs-fgrid">
+                <div class="gs-field">
+                  <label>First Name</label>
+                  <input type="text" value="Gaurav">
+                </div>
+                <div class="gs-field">
+                  <label>Last Name</label>
+                  <input type="text" value="Dixit">
+                </div>
+                <div class="gs-field gs-fgrid__full">
+                  <label>Email Address</label>
+                  <input type="email" value="gaurav.neu@gmail.com">
+                </div>
+                <div class="gs-field">
+                  <label>New Password</label>
+                  <input type="password" placeholder="Leave blank to keep current">
+                </div>
+                <div class="gs-field">
+                  <label>Confirm Password</label>
+                  <input type="password" placeholder="Repeat new password">
+                </div>
+              </div>
+              <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--color-ink-soft);display:flex;justify-content:flex-end;gap:12px;">
+                <button class="gs-btn gs-btn--secondary">Cancel</button>
+                <button class="gs-btn gs-btn--primary">Save Changes</button>
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

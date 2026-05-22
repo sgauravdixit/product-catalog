@@ -1,0 +1,117 @@
+<div class="app">
+  <!-- Landing header -->
+  <header class="landing-header">
+    <div class="landing-header__inner">
+      <span class="landing-header__brand">Gaurav's ShopMart</span>
+      <div class="landing-header__actions">
+        <button class="gs-header__signin" routerLink="/login">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Login
+        </button>
+        <button class="gs-btn gs-btn--primary" style="border-color:white;background:white;color:#000;font-size:13px;padding:6px 18px;border-radius:9999px;" routerLink="/register">
+          Sign Up
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="gs-main">
+    <!-- Hero -->
+    <section class="gs-hero">
+      <p class="gs-hero__eyebrow">OVER 1,000 PRODUCTS · FREE SHIPPING · EASY RETURNS</p>
+      <h1 class="gs-hero__title">Every day.<br>Extraordinary<br>finds.</h1>
+      <p class="gs-hero__sub">Discover curated products across electronics, fashion, home &amp; books. Quality you can trust, prices you'll love.</p>
+      <div class="gs-hero__row">
+        <button class="gs-btn gs-btn--primary" routerLink="/login">
+          Shop Now
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+        <button class="gs-btn gs-btn--secondary" routerLink="/login">Sign In</button>
+      </div>
+      <dl class="gs-hero__meta">
+        <div><dt>Products</dt><dd>1,000+</dd></div>
+        <div><dt>Brands</dt><dd>200+</dd></div>
+        <div><dt>Happy Customers</dt><dd>50K+</dd></div>
+      </dl>
+    </section>
+  </main>
+
+  <!-- Marquee -->
+  <div class="gs-marquee">
+    <div class="gs-marquee__track">
+      @for (item of marqueeItems; track $index) {
+        <span class="gs-marquee__item">{{ item }}</span>
+      }
+    </div>
+  </div>
+
+  <main class="gs-main">
+    <!-- Categories -->
+    <section class="gs-section">
+      <div class="gs-secthead">
+        <div>
+          <p class="gs-secthead__eyebrow">BROWSE BY</p>
+          <h2 class="gs-secthead__title">Category</h2>
+        </div>
+        <span class="gs-secthead__link" routerLink="/login">
+          View All
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+      <div class="gs-cats">
+        @for (cat of categories; track cat.name) {
+          <div class="gs-cat {{ cat.color }}" routerLink="/login">
+            <span class="gs-cat__num">{{ $index + 1 }}</span>
+            <div class="gs-cat__name">{{ cat.name }}</div>
+            <div class="gs-cat__count">{{ cat.count }} products</div>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Featured products -->
+    <section class="gs-section">
+      <div class="gs-secthead">
+        <div>
+          <p class="gs-secthead__eyebrow">HAND-PICKED</p>
+          <h2 class="gs-secthead__title">Featured</h2>
+        </div>
+        <span class="gs-secthead__link" routerLink="/login">
+          View All
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </span>
+      </div>
+      <div class="gs-pgrid">
+        @for (p of featured; track p.id) {
+          <div class="gs-pcard {{ cardClass($index) }}" routerLink="/login">
+            <div class="gs-pcard__media">
+              <img [src]="p.image" [alt]="p.name" loading="lazy">
+              <span class="gs-pcard__cat">{{ p.category }}</span>
+              @if (p.badge) {
+                <button class="gs-pcard__heart">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                </button>
+              }
+            </div>
+            <div class="gs-pcard__body">
+              <h3 class="gs-pcard__title">{{ p.name }}</h3>
+              <p class="gs-pcard__desc">{{ p.description }}</p>
+              <div class="gs-pcard__foot">
+                <span class="gs-pcard__price">${{ p.price.toFixed(2) }}</span>
+                <span class="gs-pcard__stock">In Stock</span>
+              </div>
+              <div class="gs-pcard__actions">
+                <button class="gs-pcard__addbtn" routerLink="/login">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  View Details
+                </button>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+</div>

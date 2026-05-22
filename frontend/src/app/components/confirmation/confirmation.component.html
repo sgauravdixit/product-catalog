@@ -1,0 +1,98 @@
+<div class="app">
+  <app-header></app-header>
+
+  <main class="gs-main">
+    <div class="gs-confirm">
+      <!-- Header -->
+      <div class="gs-confirm__head">
+        <div class="gs-confirm__check">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <p class="gs-secthead__eyebrow">ORDER PLACED SUCCESSFULLY</p>
+        <h1 class="gs-confirm__title">Order<br>Confirmed!</h1>
+        @if (order) {
+          <p class="gs-confirm__sub">
+            Thank you for your order. We've received it and will start processing right away.
+            Your order number is <strong>{{ order.orderNumber }}</strong>.
+          </p>
+        } @else {
+          <p class="gs-confirm__sub">Thank you for shopping with Gaurav's ShopMart!</p>
+        }
+      </div>
+
+      @if (order) {
+        <!-- Info cards -->
+        <div class="gs-confirm__grid">
+          <div class="gs-confirm__card">
+            <span class="gs-confirm__cardlabel">Order Number</span>
+            <span class="gs-confirm__cardvalue">{{ order.orderNumber }}</span>
+          </div>
+          <div class="gs-confirm__card gs-confirm__card--mint">
+            <span class="gs-confirm__cardlabel">Estimated Delivery</span>
+            <span class="gs-confirm__cardvalue" style="font-size:18px;">{{ deliveryDate }}</span>
+          </div>
+          <div class="gs-confirm__card gs-confirm__card--blush">
+            <span class="gs-confirm__cardlabel">Order Total</span>
+            <span class="gs-confirm__cardvalue gs-confirm__cardvalue--lg">${{ order.total.toFixed(2) }}</span>
+          </div>
+        </div>
+
+        <!-- Items -->
+        <div>
+          <div class="gs-secthead" style="margin-bottom:0;">
+            <div>
+              <p class="gs-secthead__eyebrow">WHAT YOU ORDERED</p>
+              <h2 style="font-family:var(--font-display);font-weight:800;font-size:32px;letter-spacing:-0.02em;margin:0;">Your Items</h2>
+            </div>
+            <div style="font-family:var(--font-body);font-size:14px;color:var(--fg-muted);">
+              {{ order.items.length }} item{{ order.items.length !== 1 ? 's' : '' }}
+            </div>
+          </div>
+          <ul class="gs-confirm__list">
+            @for (item of order.items; track item.product.id; let i = $index) {
+              <li class="gs-confirm__lrow">
+                <div style="width:48px;height:48px;border-radius:50%;background:var(--color-ink);color:var(--fg-on-ink);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:800;font-size:14px;">
+                  {{ i + 1 }}
+                </div>
+                <div class="gs-confirm__limg">
+                  <img [src]="item.product.image" [alt]="item.product.name">
+                </div>
+                <div>
+                  <div class="gs-confirm__lname">{{ item.product.name }}</div>
+                  <div class="gs-confirm__lmeta">{{ item.product.category }} · Qty: {{ item.quantity }}</div>
+                </div>
+                <div class="gs-confirm__lprice">${{ (item.product.price * item.quantity).toFixed(2) }}</div>
+              </li>
+            }
+          </ul>
+
+          <!-- Totals -->
+          <div style="display:flex;justify-content:flex-end;margin-top:24px;">
+            <div style="min-width:280px;background:var(--bg-card-1);border-radius:12px;padding:20px 24px;">
+              <div style="display:flex;justify-content:space-between;font-family:var(--font-body);font-size:14px;margin-bottom:8px;"><span style="color:var(--fg-body);">Subtotal</span><span style="font-weight:600;">${{ order.subtotal.toFixed(2) }}</span></div>
+              <div style="display:flex;justify-content:space-between;font-family:var(--font-body);font-size:14px;margin-bottom:12px;"><span style="color:var(--fg-body);">Shipping</span><span style="font-weight:600;">{{ order.shipping === 0 ? 'Free' : '$' + order.shipping.toFixed(2) }}</span></div>
+              <div style="display:flex;justify-content:space-between;border-top:1px solid var(--color-ink-soft);padding-top:12px;">
+                <span style="font-family:var(--font-body);font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;">Total</span>
+                <span style="font-family:var(--font-display);font-weight:800;font-size:24px;letter-spacing:-0.02em;">${{ order.total.toFixed(2) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- Footer actions -->
+      <div class="gs-confirm__foot">
+        <span style="font-family:var(--font-body);font-size:13px;color:var(--fg-muted);display:inline-flex;align-items:center;gap:6px;">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          A confirmation email has been sent to you
+        </span>
+        <button class="gs-btn gs-btn--primary" routerLink="/home">
+          Continue Shopping
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <app-footer></app-footer>
+</div>

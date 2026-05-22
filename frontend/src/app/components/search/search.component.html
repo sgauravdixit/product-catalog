@@ -1,0 +1,90 @@
+<div class="app">
+  <app-header></app-header>
+
+  <main class="gs-main">
+    <section class="gs-section--tight">
+      <div style="padding:32px 0 0;">
+        <p class="gs-secthead__eyebrow">FIND ANYTHING</p>
+        <h1 class="gs-pagehead__title">Search</h1>
+      </div>
+
+      <div style="margin-top:24px;" class="gs-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:28px;height:28px;flex-shrink:0;color:var(--fg-muted)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input
+          class="gs-search__input"
+          type="text"
+          [(ngModel)]="query"
+          placeholder="Search products…"
+          (keydown.enter)="doSearch()"
+          autofocus>
+        @if (query) {
+          <button class="gs-search__clear" (click)="clearSearch()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        }
+        <button class="gs-btn gs-btn--primary" (click)="doSearch()">Search</button>
+      </div>
+
+      @if (!searched) {
+        <div style="margin-top:24px;">
+          <p class="gs-search__suglabel">POPULAR SEARCHES</p>
+          <div class="gs-chiprow" style="margin-top:12px;">
+            @for (s of suggestions; track s) {
+              <button class="gs-chip" (click)="useSuggestion(s)">{{ s }}</button>
+            }
+          </div>
+        </div>
+      }
+
+      @if (searched && results.length === 0) {
+        <div class="gs-empty" style="margin-top:32px;">
+          <h3>No results for "{{ query }}"</h3>
+          <p>Try a different search term or browse our categories.</p>
+          <button class="gs-btn gs-btn--primary" (click)="clearSearch()">Clear Search</button>
+        </div>
+      }
+
+      @if (results.length > 0) {
+        <div style="margin-top:16px;margin-bottom:20px;">
+          <p class="gs-pagehead__count">{{ results.length }} result{{ results.length !== 1 ? 's' : '' }} for "{{ query }}"</p>
+        </div>
+        <div class="gs-pgrid">
+          @for (p of results; track p.id; let i = $index) {
+            <div class="gs-pcard {{ cardClass(i) }}">
+              <div class="gs-pcard__media">
+                <img [src]="p.image" [alt]="p.name" loading="lazy">
+                <span class="gs-pcard__cat">{{ p.category }}</span>
+              </div>
+              <div class="gs-pcard__body">
+                @if (p.badge) {
+                  <span style="font-size:10px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);">{{ p.badge }}</span>
+                }
+                <h3 class="gs-pcard__title">{{ p.name }}</h3>
+                <p class="gs-pcard__desc">{{ p.description }}</p>
+                <div class="gs-pcard__foot">
+                  <span class="gs-pcard__price">${{ p.price.toFixed(2) }}</span>
+                  <span class="gs-pcard__stock">In Stock</span>
+                </div>
+                <div class="gs-pcard__actions">
+                  <button class="gs-pcard__addbtn" (click)="addToCart(p)">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </section>
+  </main>
+
+  <app-footer></app-footer>
+
+  @if (toastVisible) {
+    <div class="gs-toast">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+      Added to cart!
+    </div>
+  }
+</div>
