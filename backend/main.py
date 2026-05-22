@@ -1,11 +1,14 @@
 import hashlib
+import logging
 from typing import Optional
 
-import pyodbc
 from database import get_connection
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = FastAPI(title="Product Catalog API")
 
@@ -19,6 +22,22 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+# ---------------------------------------------------------------------------
+# Health check
+# ---------------------------------------------------------------------------
+
+@app.get("/health")
+async def health():
+    try:
+        conn = get_connection()
+        conn.cursor().execute("SELECT 1")
+        conn.close()
+        return {"status": "ok", "database": "connected"}
+    except Exception as e:
+        logger.error("Health check failed: %s", e)
+        return {"status": "error", "database": "disconnected", "detail": str(e)}
 
 
 # ---------------------------------------------------------------------------
@@ -116,7 +135,7 @@ async def get_products():
         cursor = conn.cursor()
         cursor.execute(_PRODUCT_SELECT)
         return [_product_row(r) for r in cursor.fetchall()]
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -131,7 +150,7 @@ async def get_products_by_category(name: str):
         cursor = conn.cursor()
         cursor.execute(_PRODUCT_SELECT + " WHERE c.name = ?", name)
         return [_product_row(r) for r in cursor.fetchall()]
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -149,7 +168,7 @@ async def get_product(product_id: int):
         return _product_row(row)
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -162,7 +181,7 @@ async def get_categories():
         cursor = conn.cursor()
         cursor.execute("SELECT id, name FROM Categories ORDER BY name")
         return [{"id": r[0], "name": r[1]} for r in cursor.fetchall()]
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -193,7 +212,7 @@ async def register_user(user: UserRegister):
         return {"id": row[0], "full_name": row[1], "email": row[2], "phone": row[3]}
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -214,7 +233,7 @@ async def login_user(credentials: UserLogin):
         return _user_row(row)
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -232,7 +251,7 @@ async def get_user(user_id: int):
         return _user_row(row)
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -266,7 +285,7 @@ async def update_user(user_id: int, user: UserUpdate):
         return _user_row(cursor.fetchone())
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -310,7 +329,7 @@ async def get_cart(user_id: int):
         ]
         total = round(sum(i["subtotal"] for i in items), 2)
         return {"cart_id": cart_id, "user_id": user_id, "items": items, "total": total}
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -348,7 +367,7 @@ async def add_to_cart(user_id: int, item: CartItemAdd):
             )
         conn.commit()
         return {"message": "Item added to cart", "cart_id": cart_id}
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -372,7 +391,7 @@ async def update_cart_item(item_id: int, update: CartItemUpdate):
         return {"message": "Cart item updated"}
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -390,7 +409,7 @@ async def remove_cart_item(item_id: int):
         conn.commit()
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -406,7 +425,7 @@ async def clear_cart(user_id: int):
         if cart:
             cursor.execute("DELETE FROM Cart_Items WHERE cart_id = ?", cart[0])
             conn.commit()
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -464,7 +483,7 @@ async def get_order_detail(order_id: int):
         }
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -490,7 +509,7 @@ async def get_user_orders(user_id: int):
             }
             for r in cursor.fetchall()
         ]
-    except pyodbc.Error as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -557,7 +576,7 @@ async def create_order(user_id: int):
         return {"message": "Order placed successfully", "order_id": order_id, "total": total}
     except HTTPException:
         raise
-    except pyodbc.Error as e:
+    except Exception as e:
         conn.rollback()
         raise HTTPException(status_code=500, detail=str(e))
     finally:
