@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { TitleCasePipe, DatePipe } from '@angular/common';
 import { HeaderComponent } from '../shared/header/header.component';
@@ -19,6 +19,7 @@ export class ProfileComponent implements OnInit {
   private orderService = inject(OrderService);
   private profileService = inject(ProfileService);
   private auth = inject(AuthService);
+  private router = inject(Router);
 
   user: User | null = null;
   orders: ApiOrder[] = [];
@@ -96,6 +97,11 @@ export class ProfileComponent implements OnInit {
 
   get lastOrder() {
     return this.orderService.lastOrder();
+  }
+
+  logout(): void {
+    this.auth.logout();
+    this.router.navigate(['/']);
   }
 
   saveSettings(): void {

@@ -22,8 +22,8 @@
 
   --accent: #F5E642;
 
-  --font-display: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+  --font-body:    'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --font-mono:    'Courier New', monospace;
 
   --layout-max:    1280px;

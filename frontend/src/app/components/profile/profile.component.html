@@ -3,7 +3,7 @@
 
   <main class="gs-main">
     <section class="gs-section--tight">
-      <div style="padding:32px 0 24px;">
+      <div class="profile-page-head">
         <p class="gs-secthead__eyebrow">YOUR ACCOUNT</p>
         <h1 class="gs-pagehead__title">Profile</h1>
       </div>
@@ -11,9 +11,18 @@
       <div class="gs-profile">
         <!-- Sidebar -->
         <div class="gs-profile__nav">
-          <div class="gs-profile__avatar">{{ initials }}</div>
-          <div class="gs-profile__name">{{ user?.full_name || 'User' }}</div>
-          <div class="gs-profile__email">{{ user?.email || '' }}</div>
+          <div class="profile-nav__user">
+            <div class="profile-avatar-wrap">
+              <div class="gs-profile__avatar">{{ initials }}</div>
+              <div class="profile-avatar-ring"></div>
+            </div>
+            <div class="gs-profile__name">{{ user?.full_name || 'User' }}</div>
+            <div class="gs-profile__email">{{ user?.email || '' }}</div>
+            <div class="profile-member-badge">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:10px;height:10px;"><circle cx="12" cy="12" r="10"/></svg>
+              Member
+            </div>
+          </div>
 
           <ul class="gs-profile__list">
             @for (tab of tabs; track tab.id) {
@@ -22,23 +31,35 @@
                   class="gs-profile__navitem"
                   [class.gs-profile__navitem--on]="activeTab === tab.id"
                   (click)="setTab(tab.id)">
-                  @if (tab.id === 'overview') {
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                  <span class="navitem-icon">
+                    @if (tab.id === 'overview') {
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+                    }
+                    @if (tab.id === 'orders') {
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                    }
+                    @if (tab.id === 'addresses') {
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    }
+                    @if (tab.id === 'settings') {
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                    }
+                  </span>
+                  <span class="navitem-label">{{ tab.label }}</span>
+                  @if (activeTab === tab.id) {
+                    <span class="navitem-dot"></span>
                   }
-                  @if (tab.id === 'orders') {
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><line x1="16.5" y1="9.4" x2="7.5" y2="4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                  }
-                  @if (tab.id === 'addresses') {
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  }
-                  @if (tab.id === 'settings') {
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93A10 10 0 0 0 4.93 19.07M4.93 4.93a10 10 0 0 1 14.14 14.14"/></svg>
-                  }
-                  {{ tab.label }}
                 </button>
               </li>
             }
           </ul>
+
+          <div class="profile-nav__footer">
+            <button class="gs-profile__logout" (click)="logout()">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+              Sign Out
+            </button>
+          </div>
         </div>
 
         <!-- Main content -->
@@ -46,41 +67,57 @@
 
           <!-- Overview tab -->
           @if (activeTab === 'overview') {
-            <div class="gs-secthead">
-              <div>
-                <p class="gs-secthead__eyebrow">DASHBOARD</p>
-                <h2 class="gs-secthead__title" style="font-size:40px;">Overview</h2>
+            <div class="tab-content">
+              <div class="gs-secthead">
+                <div>
+                  <p class="gs-secthead__eyebrow">DASHBOARD</p>
+                  <h2 class="gs-secthead__title" style="font-size:40px;">Overview</h2>
+                </div>
               </div>
-            </div>
-            <div class="gs-profile__cards">
-              <div class="gs-confirm__card">
-                <span class="gs-confirm__cardlabel">Total Orders</span>
-                <span class="gs-confirm__cardvalue">{{ orders.length }}</span>
+              <div class="gs-profile__cards">
+                <div class="stat-card stat-card--sand" (click)="setTab('orders')">
+                  <span class="stat-card__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                  </span>
+                  <span class="gs-confirm__cardlabel">Total Orders</span>
+                  <span class="gs-confirm__cardvalue">{{ orders.length }}</span>
+                  <span class="stat-card__cta">View all →</span>
+                </div>
+                <div class="stat-card stat-card--mint">
+                  <span class="stat-card__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  </span>
+                  <span class="gs-confirm__cardlabel">Amount Spent</span>
+                  <span class="gs-confirm__cardvalue">${{ totalSpent.toFixed(2) }}</span>
+                  <span class="stat-card__cta">Lifetime total</span>
+                </div>
+                <div class="stat-card stat-card--blush">
+                  <span class="stat-card__icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </span>
+                  <span class="gs-confirm__cardlabel">Member Since</span>
+                  <span class="gs-confirm__cardvalue" style="font-size:18px;">May 2024</span>
+                  <span class="stat-card__cta">Active member</span>
+                </div>
               </div>
-              <div class="gs-confirm__card gs-confirm__card--mint">
-                <span class="gs-confirm__cardlabel">Amount Spent</span>
-                <span class="gs-confirm__cardvalue">${{ totalSpent.toFixed(2) }}</span>
-              </div>
-              <div class="gs-confirm__card gs-confirm__card--blush">
-                <span class="gs-confirm__cardlabel">Member Since</span>
-                <span class="gs-confirm__cardvalue" style="font-size:18px;">May 2024</span>
-              </div>
-            </div>
 
-            <div style="margin-top:40px;">
-              <p style="font-family:var(--font-body);font-size:15px;color:var(--fg-body);line-height:1.6;">
-                Welcome back, <strong>{{ firstName }}</strong>! You're all set to explore thousands of products.
-                Check your order history, manage your addresses, or head to the catalog to discover something new.
-              </p>
-              <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
-                <button class="gs-btn gs-btn--primary" routerLink="/home">Browse Catalog</button>
-                <button class="gs-btn gs-btn--secondary" (click)="setTab('orders')">My Orders</button>
+              <div class="overview-welcome">
+                <p>Welcome back, <strong>{{ firstName }}</strong>! You're all set to explore thousands of products.
+                  Check your order history, manage your addresses, or head to the catalog to discover something new.</p>
+                <div class="overview-actions">
+                  <button class="gs-btn gs-btn--primary" routerLink="/home">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    Browse Catalog
+                  </button>
+                  <button class="gs-btn gs-btn--secondary" (click)="setTab('orders')">My Orders</button>
+                </div>
               </div>
             </div>
           }
 
           <!-- Orders tab -->
           @if (activeTab === 'orders') {
+            <div class="tab-content">
             <div class="gs-secthead">
               <div>
                 <p class="gs-secthead__eyebrow">HISTORY</p>
@@ -156,82 +193,90 @@
                 <button class="gs-btn gs-btn--primary" routerLink="/home">Start Shopping</button>
               </div>
             }
+            </div>
           }
 
           <!-- Addresses tab -->
           @if (activeTab === 'addresses') {
-            <div class="gs-secthead">
-              <div>
-                <p class="gs-secthead__eyebrow">SAVED</p>
-                <h2 class="gs-secthead__title" style="font-size:40px;">Addresses</h2>
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-              <div style="background:var(--bg-card-1);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:12px;">
-                <span style="font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);">HOME</span>
-                <div style="font-family:var(--font-body);font-size:15px;line-height:1.6;color:var(--fg-default);">
-                  Gaurav Dixit<br>
-                  123 Main Street, Apt 4B<br>
-                  New York, NY 10001<br>
-                  United States
-                </div>
-                <div style="display:flex;gap:8px;margin-top:auto;">
-                  <button class="gs-btn gs-btn--secondary" style="font-size:13px;padding:8px 14px;">Edit</button>
+            <div class="tab-content">
+              <div class="gs-secthead">
+                <div>
+                  <p class="gs-secthead__eyebrow">SAVED</p>
+                  <h2 class="gs-secthead__title" style="font-size:40px;">Addresses</h2>
                 </div>
               </div>
-              <div style="background:transparent;border:1.5px dashed var(--color-ink);border-radius:12px;padding:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--fg-default);gap:8px;min-height:160px;">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                Add New Address
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                <div class="addr-card">
+                  <span class="addr-tag">HOME</span>
+                  <div class="addr-body">
+                    Gaurav Dixit<br>
+                    123 Main Street, Apt 4B<br>
+                    New York, NY 10001<br>
+                    United States
+                  </div>
+                  <div style="display:flex;gap:8px;margin-top:auto;">
+                    <button class="gs-btn gs-btn--secondary" style="font-size:13px;padding:8px 14px;">Edit</button>
+                  </div>
+                </div>
+                <button class="addr-card addr-card--add">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add New Address
+                </button>
               </div>
             </div>
           }
 
           <!-- Settings tab -->
           @if (activeTab === 'settings') {
-            <div class="gs-secthead">
-              <div>
-                <p class="gs-secthead__eyebrow">PREFERENCES</p>
-                <h2 class="gs-secthead__title" style="font-size:40px;">Settings</h2>
-              </div>
-            </div>
-            <div style="background:var(--bg-page);border:1.5px solid var(--color-ink);border-radius:12px;padding:32px;">
-              <div class="gs-fgrid">
-                <div class="gs-field gs-fgrid__full">
-                  <label>Full Name</label>
-                  <input type="text" [(ngModel)]="editName" placeholder="Your full name">
-                </div>
-                <div class="gs-field gs-fgrid__full">
-                  <label>Email Address</label>
-                  <input type="email" [value]="user?.email || ''" disabled style="opacity:0.6;cursor:not-allowed;">
-                </div>
-                <div class="gs-field">
-                  <label>Phone</label>
-                  <input type="tel" [(ngModel)]="editPhone" placeholder="+1 555 000 0000">
-                </div>
-                <div class="gs-field">
-                  <label>Address</label>
-                  <input type="text" [(ngModel)]="editAddress1" placeholder="Street address">
-                </div>
-                <div class="gs-field">
-                  <label>City</label>
-                  <input type="text" [(ngModel)]="editCity" placeholder="City">
-                </div>
-                <div class="gs-field">
-                  <label>State</label>
-                  <input type="text" [(ngModel)]="editState" placeholder="State">
-                </div>
-                <div class="gs-field">
-                  <label>ZIP Code</label>
-                  <input type="text" [(ngModel)]="editZip" placeholder="ZIP">
+            <div class="tab-content">
+              <div class="gs-secthead">
+                <div>
+                  <p class="gs-secthead__eyebrow">PREFERENCES</p>
+                  <h2 class="gs-secthead__title" style="font-size:40px;">Settings</h2>
                 </div>
               </div>
-              <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--color-ink-soft);display:flex;justify-content:flex-end;align-items:center;gap:12px;">
-                @if (saveSuccess) {
-                  <span style="font-family:var(--font-body);font-size:13px;color:var(--color-success);font-weight:600;">Saved!</span>
-                }
-                <button class="gs-btn gs-btn--primary" (click)="saveSettings()" [disabled]="saveLoading">
-                  {{ saveLoading ? 'Saving…' : 'Save Changes' }}
-                </button>
+              <div class="settings-panel">
+                <div class="gs-fgrid">
+                  <div class="gs-field gs-fgrid__full">
+                    <label>Full Name</label>
+                    <input type="text" [(ngModel)]="editName" placeholder="Your full name">
+                  </div>
+                  <div class="gs-field gs-fgrid__full">
+                    <label>Email Address</label>
+                    <input type="email" [value]="user?.email || ''" disabled style="opacity:0.6;cursor:not-allowed;">
+                  </div>
+                  <div class="gs-field">
+                    <label>Phone</label>
+                    <input type="tel" [(ngModel)]="editPhone" placeholder="+1 555 000 0000">
+                  </div>
+                  <div class="gs-field">
+                    <label>Address</label>
+                    <input type="text" [(ngModel)]="editAddress1" placeholder="Street address">
+                  </div>
+                  <div class="gs-field">
+                    <label>City</label>
+                    <input type="text" [(ngModel)]="editCity" placeholder="City">
+                  </div>
+                  <div class="gs-field">
+                    <label>State</label>
+                    <input type="text" [(ngModel)]="editState" placeholder="State">
+                  </div>
+                  <div class="gs-field">
+                    <label>ZIP Code</label>
+                    <input type="text" [(ngModel)]="editZip" placeholder="ZIP">
+                  </div>
+                </div>
+                <div class="settings-actions">
+                  @if (saveSuccess) {
+                    <span class="settings-saved">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"/></svg>
+                      Saved!
+                    </span>
+                  }
+                  <button class="gs-btn gs-btn--primary" (click)="saveSettings()" [disabled]="saveLoading">
+                    {{ saveLoading ? 'Saving…' : 'Save Changes' }}
+                  </button>
+                </div>
               </div>
             </div>
           }
