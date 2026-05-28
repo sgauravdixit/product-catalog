@@ -1,5 +1,6 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { HeaderComponent } from '../shared/header/header.component';
 import { FooterComponent } from '../shared/footer/footer.component';
 import { ProductService } from '../../services/product.service';
@@ -9,7 +10,7 @@ import { Product } from '../../models/product.model';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, HeaderComponent, FooterComponent],
+  imports: [RouterLink, FormsModule, HeaderComponent, FooterComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -20,12 +21,14 @@ export class HomeComponent implements OnInit {
   allProducts: Product[] = [];
   categories: string[] = ['All'];
   activeCategory = 'All';
+  searchQuery = '';
   selectedProduct: Product | null = null;
   drawerQty = 1;
   toastVisible = false;
   toastMessage = '';
   loading = true;
   error = '';
+  readonly skeletons = [1,2,3,4,5,6,7,8];
 
   ngOnInit(): void {
     this.productService.getAll().subscribe({
@@ -39,9 +42,21 @@ export class HomeComponent implements OnInit {
   }
 
   get filtered(): Product[] {
-    if (this.activeCategory === 'All') return this.allProducts;
-    return this.allProducts.filter(p => p.category === this.activeCategory);
+    let list = this.activeCategory === 'All'
+      ? this.allProducts
+      : this.allProducts.filter(p => p.category === this.activeCategory);
+    const q = this.searchQuery.trim().toLowerCase();
+    if (q) {
+      list = list.filter(p =>
+        p.name.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q)
+      );
+    }
+    return list;
   }
+
+  clearSearch(): void { this.searchQuery = ''; }
 
   cardClass(i: number): string {
     const c = ['', 'gs-pcard--mint', 'gs-pcard--blush'];

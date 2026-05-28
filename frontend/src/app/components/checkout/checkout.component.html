@@ -25,33 +25,33 @@
               Shipping Details
             </div>
             <div class="gs-fgrid">
-              <div class="gs-field">
-                <label>First Name</label>
-                <input type="text" [(ngModel)]="firstName" placeholder="Gaurav">
+              <div class="gs-float-field">
+                <input type="text" placeholder=" " [(ngModel)]="firstName" id="firstName">
+                <label for="firstName">First Name</label>
               </div>
-              <div class="gs-field">
-                <label>Last Name</label>
-                <input type="text" [(ngModel)]="lastName" placeholder="Dixit">
+              <div class="gs-float-field">
+                <input type="text" placeholder=" " [(ngModel)]="lastName" id="lastName">
+                <label for="lastName">Last Name</label>
               </div>
-              <div class="gs-field">
-                <label>Email</label>
-                <input type="email" [(ngModel)]="email" placeholder="gaurav@example.com">
+              <div class="gs-float-field">
+                <input type="email" placeholder=" " [(ngModel)]="email" id="email">
+                <label for="email">Email Address</label>
               </div>
-              <div class="gs-field">
-                <label>Phone</label>
-                <input type="tel" [(ngModel)]="phone" placeholder="+1 (555) 000-0000">
+              <div class="gs-float-field">
+                <input type="tel" placeholder=" " [(ngModel)]="phone" id="phone">
+                <label for="phone">Phone Number</label>
               </div>
-              <div class="gs-field gs-fgrid__full">
-                <label>Street Address</label>
-                <input type="text" [(ngModel)]="address" placeholder="123 Main Street, Apt 4B">
+              <div class="gs-float-field gs-fgrid__full">
+                <input type="text" placeholder=" " [(ngModel)]="address" id="address">
+                <label for="address">Street Address</label>
               </div>
-              <div class="gs-field">
-                <label>City</label>
-                <input type="text" [(ngModel)]="city" placeholder="New York">
+              <div class="gs-float-field">
+                <input type="text" placeholder=" " [(ngModel)]="city" id="city">
+                <label for="city">City</label>
               </div>
-              <div class="gs-field">
-                <label>ZIP / Postal Code</label>
-                <input type="text" [(ngModel)]="zip" placeholder="10001">
+              <div class="gs-float-field">
+                <input type="text" placeholder=" " [(ngModel)]="zip" id="zip">
+                <label for="zip">ZIP / Postal Code</label>
               </div>
             </div>
           </div>
@@ -87,21 +87,21 @@
               Payment
             </div>
             <div class="gs-fgrid">
-              <div class="gs-field gs-fgrid__full">
-                <label>Card Number</label>
-                <input type="text" placeholder="1234 5678 9012 3456" maxlength="19">
+              <div class="gs-float-field gs-fgrid__full">
+                <input type="text" placeholder=" " id="cardNumber" maxlength="19">
+                <label for="cardNumber">Card Number</label>
               </div>
-              <div class="gs-field">
-                <label>Expiry Date</label>
-                <input type="text" placeholder="MM / YY">
+              <div class="gs-float-field">
+                <input type="text" placeholder=" " id="expiry">
+                <label for="expiry">Expiry Date (MM / YY)</label>
               </div>
-              <div class="gs-field">
-                <label>CVV</label>
-                <input type="text" placeholder="123" maxlength="4">
+              <div class="gs-float-field">
+                <input type="text" placeholder=" " id="cvv" maxlength="4">
+                <label for="cvv">CVV</label>
               </div>
-              <div class="gs-field gs-fgrid__full">
-                <label>Name on Card</label>
-                <input type="text" placeholder="Gaurav Dixit">
+              <div class="gs-float-field gs-fgrid__full">
+                <input type="text" placeholder=" " id="cardName">
+                <label for="cardName">Name on Card</label>
               </div>
             </div>
           </div>
@@ -145,7 +145,7 @@
             Confirm Order
           </button>
           <p style="font-family:var(--font-body);font-size:12px;color:var(--fg-muted);text-align:center;margin-top:10px;">
-            🔒 Secured by 256-bit SSL encryption
+            Secured by 256-bit SSL encryption
           </p>
         </div>
       </div>

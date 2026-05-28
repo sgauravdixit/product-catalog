@@ -22,8 +22,8 @@
 
   --accent: #F5E642;
 
-  --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
-  --font-body:    'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
   --font-mono:    'Courier New', monospace;
 
   --layout-max:    1280px;
@@ -40,6 +40,7 @@
    Global reset
    ============================================================ */
 *, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 html, body { margin: 0; padding: 0; min-height: 100%; background: var(--bg-page); }
 body { font-family: var(--font-body); color: var(--fg-default); }
 button { font-family: var(--font-body); }
@@ -73,11 +74,13 @@ a { text-decoration: none; color: inherit; }
 .gs-header__navlink {
   font-family: var(--font-body); font-size: 14px; font-weight: 500;
   color: var(--fg-on-ink); cursor: pointer; position: relative; padding: 4px 0; white-space: nowrap;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-repeat: no-repeat; background-size: 0% 3px; background-position: 0 100%;
+  transition: background-size var(--duration-base) var(--ease-out);
 }
 .gs-header__navlink:hover,
 .gs-header__navlink--active {
-  background-image: linear-gradient(var(--accent), var(--accent));
-  background-repeat: no-repeat; background-size: 100% 3px; background-position: 0 100%;
+  background-size: 100% 3px;
 }
 .gs-header__actions { display: flex; align-items: center; gap: 12px; }
 
@@ -124,12 +127,29 @@ a { text-decoration: none; color: inherit; }
 }
 .gs-avatar:hover { transform: translateY(-2px); }
 
+/* Header scroll state */
+.gs-header { transition: background var(--duration-base) ease, backdrop-filter var(--duration-base) ease; }
+.gs-header--scrolled {
+  background: rgba(0, 0, 0, 0.82) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* ============================================================
+   Page entrance animation
+   ============================================================ */
+@keyframes gs-page-enter {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
 /* ============================================================
    Layout
    ============================================================ */
 .gs-main {
   flex: 1; width: 100%; max-width: var(--layout-max);
   margin: 0 auto; padding: 0 var(--layout-gutter);
+  animation: gs-page-enter 0.45s var(--ease-out) both;
 }
 .gs-section { padding: 64px 0; }
 .gs-section--tight { padding: 32px 0; }
@@ -239,10 +259,22 @@ a { text-decoration: none; color: inherit; }
 
 .gs-pcard {
   background: var(--bg-card-1); border-radius: 12px; overflow: hidden;
-  cursor: pointer; transition: transform var(--duration-fast) var(--ease-out);
-  display: flex; flex-direction: column;
+  cursor: pointer; transition: transform 0.22s var(--ease-out), box-shadow 0.22s var(--ease-out);
+  display: flex; flex-direction: column; position: relative;
 }
-.gs-pcard:hover { transform: translateY(-2px); }
+.gs-pcard:hover { transform: scale(1.025) translateY(-3px); }
+
+.gs-pcard__hover-cta {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: var(--color-ink); color: var(--fg-on-ink);
+  transform: translateY(100%); transition: transform 0.28s var(--ease-out);
+  padding: 14px 18px; border: none; cursor: pointer;
+  font-family: var(--font-body); font-weight: 600; font-size: 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  letter-spacing: 0.01em;
+}
+.gs-pcard__hover-cta svg { width: 15px; height: 15px; flex-shrink: 0; }
+.gs-pcard:hover .gs-pcard__hover-cta { transform: translateY(0); }
 .gs-pcard--mint  { background: var(--bg-card-2); }
 .gs-pcard--blush { background: var(--bg-card-3); }
 
@@ -617,6 +649,121 @@ a { text-decoration: none; color: inherit; }
 .gs-orderrow__imeta { font-family: var(--font-body); font-size: 12px; color: var(--fg-muted); margin-top: 2px; }
 .gs-orderrow__iprice { font-family: var(--font-display); font-weight: 800; font-size: 15px; }
 .gs-orderrow__foot { display: flex; gap: 8px; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--color-ink-soft); }
+
+/* ============================================================
+   Skeleton loading
+   ============================================================ */
+@keyframes gs-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.gs-skeleton {
+  background: linear-gradient(90deg, var(--color-cream-150) 25%, #ede7d5 50%, var(--color-cream-150) 75%);
+  background-size: 800px 100%;
+  animation: gs-shimmer 1.4s infinite linear;
+  border-radius: 8px;
+}
+.gs-skel-card {
+  background: var(--bg-card-1); border-radius: 12px; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.gs-skel-card--mint  { background: var(--bg-card-2); }
+.gs-skel-card--blush { background: var(--bg-card-3); }
+.gs-skel-card__media { aspect-ratio: 4/3; }
+.gs-skel-card__body  { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; }
+.gs-skel-card__title { height: 22px; width: 75%; }
+.gs-skel-card__line  { height: 13px; width: 90%; }
+.gs-skel-card__line2 { height: 13px; width: 60%; }
+.gs-skel-card__foot  { display: flex; justify-content: space-between; margin-top: 6px; }
+.gs-skel-card__price { height: 26px; width: 30%; }
+.gs-skel-card__stock { height: 14px; width: 22%; }
+
+/* ============================================================
+   Cart badge bounce
+   ============================================================ */
+@keyframes gs-badge-bounce {
+  0%   { transform: scale(1); }
+  25%  { transform: scale(1.5); }
+  60%  { transform: scale(0.88); }
+  80%  { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+.gs-cartpill__badge--bounce {
+  animation: gs-badge-bounce 0.45s var(--ease-out);
+}
+
+/* ============================================================
+   Drawer scrim fade
+   ============================================================ */
+@keyframes gs-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.gs-drawer-scrim { animation: gs-fade-in 0.25s ease both; }
+.gs-drawer { animation: slideInRight 0.32s var(--ease-out) both; }
+
+/* ============================================================
+   Floating label form fields (checkout)
+   ============================================================ */
+.gs-float-field {
+  position: relative;
+  padding-top: 22px;
+}
+.gs-float-field input,
+.gs-float-field select {
+  font-family: var(--font-body); font-size: 15px; color: var(--fg-default);
+  background: var(--bg-page); border: 1.5px solid var(--color-ink);
+  border-radius: 8px; padding: 12px 14px; outline: none; width: 100%;
+  transition: border-color 0.18s ease, padding 0.15s ease;
+}
+.gs-float-field input:focus,
+.gs-float-field select:focus { border-width: 2px; padding: 11.5px 13.5px; }
+.gs-float-field label {
+  position: absolute;
+  top: 34px; left: 14px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 400;
+  color: var(--fg-muted); pointer-events: none;
+  transition: top 0.18s var(--ease-out), font-size 0.18s var(--ease-out),
+              font-weight 0.18s var(--ease-out), color 0.18s var(--ease-out),
+              letter-spacing 0.18s var(--ease-out);
+}
+.gs-float-field input:focus + label,
+.gs-float-field input:not(:placeholder-shown) + label,
+.gs-float-field select:focus + label,
+.gs-float-field select:not([value=""]) + label {
+  top: 3px; font-size: 10px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--fg-default);
+}
+.gs-fgrid__full .gs-float-field { grid-column: 1 / -1; }
+
+/* ============================================================
+   Cart qty stepper — press feedback
+   ============================================================ */
+.gs-qtystepper button { transition: background var(--duration-fast), transform var(--duration-snap); }
+.gs-qtystepper button:active { transform: scale(0.84); }
+.gs-pdp__qty button { transition: background var(--duration-fast), transform var(--duration-snap); }
+.gs-pdp__qty button:active { transform: scale(0.84); }
+
+/* ============================================================
+   Inline search bar (home page)
+   ============================================================ */
+.gs-inline-search {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px; margin-bottom: 28px;
+  background: var(--bg-page); border: 1.5px solid var(--color-ink); border-radius: 12px;
+  transition: border-color 0.18s ease;
+}
+.gs-inline-search:focus-within { border-color: var(--color-ink); border-width: 2px; }
+.gs-inline-search svg { width: 20px; height: 20px; flex-shrink: 0; color: var(--fg-muted); }
+.gs-inline-search__input {
+  flex: 1; font-family: var(--font-body); font-size: 17px; font-weight: 500;
+  color: var(--fg-default); background: transparent; border: none; outline: none; padding: 0;
+}
+.gs-inline-search__input::placeholder { color: var(--fg-muted); font-weight: 400; }
+.gs-inline-search__clear {
+  background: transparent; border: none; cursor: pointer; color: var(--fg-muted);
+  padding: 4px; border-radius: 4px; display: inline-flex; align-items: center;
+  transition: color var(--duration-fast);
+}
+.gs-inline-search__clear:hover { color: var(--fg-default); }
+.gs-inline-search__clear svg { width: 16px; height: 16px; }
 
 /* Landing page specific */
 .landing-header {

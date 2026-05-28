@@ -6,10 +6,26 @@
       <!-- Page header -->
       <div class="gs-pagehead">
         <div>
-          <p class="gs-secthead__eyebrow">DISCOVER</p>
-          <h1 class="gs-pagehead__title">Catalog</h1>
+          <p class="gs-secthead__eyebrow">CATALOG</p>
+          <h1 class="gs-pagehead__title">Discover our products</h1>
         </div>
         <span class="gs-pagehead__count">{{ filtered.length }} products</span>
+      </div>
+
+      <!-- Inline search bar -->
+      <div class="gs-inline-search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input
+          class="gs-inline-search__input"
+          type="text"
+          placeholder="Search products, categories…"
+          [(ngModel)]="searchQuery"
+          autocomplete="off">
+        @if (searchQuery) {
+          <button class="gs-inline-search__clear" (click)="clearSearch()" title="Clear search">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        }
       </div>
 
       <!-- Category filter chips -->
@@ -26,19 +42,36 @@
         </div>
       </div>
 
-      <!-- Product grid -->
+      <!-- Skeleton loading -->
       @if (loading) {
-        <div class="gs-empty"><p style="font-family:var(--font-body);color:var(--fg-muted);">Loading products…</p></div>
+        <div class="gs-pgrid">
+          @for (s of skeletons; track s; let i = $index) {
+            <div class="gs-skel-card" [class.gs-skel-card--mint]="i % 3 === 1" [class.gs-skel-card--blush]="i % 3 === 2">
+              <div class="gs-skel-card__media gs-skeleton"></div>
+              <div class="gs-skel-card__body">
+                <div class="gs-skel-card__title gs-skeleton"></div>
+                <div class="gs-skel-card__line gs-skeleton"></div>
+                <div class="gs-skel-card__line2 gs-skeleton"></div>
+                <div class="gs-skel-card__foot">
+                  <div class="gs-skel-card__price gs-skeleton"></div>
+                  <div class="gs-skel-card__stock gs-skeleton"></div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+
       } @else if (error) {
         <div class="gs-empty"><h3>Oops!</h3><p>{{ error }}</p></div>
+
       } @else if (filtered.length > 0) {
         <div class="gs-pgrid">
           @for (p of filtered; track p.id; let i = $index) {
-            <div class="gs-pcard {{ cardClass(i) }}">
+            <div class="gs-pcard {{ cardClass(i) }}" (click)="openDrawer(p)">
               <div class="gs-pcard__media">
                 <img [src]="p.image" [alt]="p.name" loading="lazy">
                 <span class="gs-pcard__cat">{{ p.category }}</span>
-                <button class="gs-pcard__heart">
+                <button class="gs-pcard__heart" (click)="$event.stopPropagation()">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
                 </button>
               </div>
@@ -54,21 +87,21 @@
                     {{ p.stock < 5 ? 'Low stock' : 'In Stock' }}
                   </span>
                 </div>
-                <div class="gs-pcard__actions">
-                  <button class="gs-pcard__addbtn" (click)="openDrawer(p)">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-                    View Details
-                  </button>
-                </div>
               </div>
+              <!-- Slide-up Add to Cart on hover -->
+              <button class="gs-pcard__hover-cta" (click)="addToCartDirect(p); $event.stopPropagation()">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+                Add to Cart
+              </button>
             </div>
           }
         </div>
+
       } @else {
         <div class="gs-empty">
           <h3>No products found</h3>
-          <p>Try selecting a different category.</p>
-          <button class="gs-btn gs-btn--primary" (click)="setCategory('All')">View All</button>
+          <p>{{ searchQuery ? 'Try a different search term.' : 'Try selecting a different category.' }}</p>
+          <button class="gs-btn gs-btn--primary" (click)="setCategory('All'); clearSearch()">View All</button>
         </div>
       }
     </section>

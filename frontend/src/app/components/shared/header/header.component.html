@@ -1,16 +1,13 @@
-<header class="gs-header">
+<header class="gs-header" [class.gs-header--scrolled]="scrolled">
   <div class="gs-header__inner">
     <span class="gs-header__brand" routerLink="/home">Gaurav's ShopMart</span>
 
     <nav class="gs-header__nav">
       <span class="gs-header__navlink" routerLink="/home" routerLinkActive="gs-header__navlink--active">Home</span>
-      <span class="gs-header__navlink" routerLink="/search" routerLinkActive="gs-header__navlink--active">Search</span>
+      <span class="gs-header__navlink" routerLink="/profile" routerLinkActive="gs-header__navlink--active">Profile</span>
     </nav>
 
     <div class="gs-header__actions">
-      <button class="gs-iconbtn" routerLink="/search" title="Search">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      </button>
       <button class="gs-iconbtn" routerLink="/profile" title="Profile">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       </button>
@@ -18,7 +15,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         Cart
         @if (cart.count() > 0) {
-          <span class="gs-cartpill__badge">{{ cart.count() }}</span>
+          <span class="gs-cartpill__badge" [class.gs-cartpill__badge--bounce]="badgeBounce">{{ cart.count() }}</span>
         }
       </button>
     </div>

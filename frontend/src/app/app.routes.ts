@@ -4,7 +4,6 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HomeComponent } from './components/home/home.component';
 import { ProductDetailComponent } from './components/product-detail/product-detail.component';
-import { SearchComponent } from './components/search/search.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { ConfirmationComponent } from './components/confirmation/confirmation.component';
@@ -16,7 +15,6 @@ export const routes: Routes = [
   { path: 'register',     component: RegisterComponent },
   { path: 'home',         component: HomeComponent },
   { path: 'product/:id',  component: ProductDetailComponent },
-  { path: 'search',       component: SearchComponent },
   { path: 'cart',         component: CartComponent },
   { path: 'checkout',     component: CheckoutComponent },
   { path: 'confirmation', component: ConfirmationComponent },

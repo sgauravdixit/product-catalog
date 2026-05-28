@@ -9,6 +9,7 @@
   border-radius: 8px;
   cursor: pointer;
   background: var(--bg-page);
+  transition: background 0.18s ease, border-color 0.18s ease, border-width 0.12s ease;
 }
 .gs-shipopt--on {
   background: var(--bg-card-1);
