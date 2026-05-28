@@ -5,12 +5,23 @@ import { CartItem, LastOrder } from '../models/product.model';
 import { AuthService } from './auth.service';
 import { environment } from '../../environments/environment';
 
+export interface ApiOrderItem {
+  id: number;
+  product_id: number;
+  quantity: number;
+  unit_price: number;
+  name: string;
+  image_url: string;
+  subtotal: number;
+}
+
 export interface ApiOrder {
   id: number;
   total_amount: number;
   shipping_address: string;
   status: string;
   created_at: string;
+  items?: ApiOrderItem[];
 }
 
 @Injectable({ providedIn: 'root' })

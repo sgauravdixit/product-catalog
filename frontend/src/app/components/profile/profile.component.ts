@@ -22,6 +22,7 @@ export class ProfileComponent implements OnInit {
 
   user: User | null = null;
   orders: ApiOrder[] = [];
+  expandedOrders = new Set<number>();
   activeTab = 'overview';
   saveLoading = false;
   saveSuccess = false;
@@ -67,6 +68,18 @@ export class ProfileComponent implements OnInit {
   }
 
   setTab(id: string): void { this.activeTab = id; }
+
+  toggleOrder(orderId: number): void {
+    if (this.expandedOrders.has(orderId)) {
+      this.expandedOrders.delete(orderId);
+    } else {
+      this.expandedOrders.add(orderId);
+    }
+  }
+
+  isExpanded(orderId: number): boolean {
+    return this.expandedOrders.has(orderId);
+  }
 
   get initials(): string {
     if (!this.user) return 'U';

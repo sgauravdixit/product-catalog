@@ -91,23 +91,62 @@
             @if (orders.length > 0) {
               @for (order of orders; track order.id) {
                 <div class="gs-orderrow" style="margin-bottom:16px;">
-                  <div class="gs-orderrow__head">
+                  <!-- Order header row (always visible) -->
+                  <div class="gs-orderrow__head" style="cursor:pointer;" (click)="toggleOrder(order.id)">
                     <div>
                       <p style="font-family:var(--font-body);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--fg-muted);">ORDER</p>
                       <h3 class="gs-orderrow__title">SM-{{ order.id.toString().padStart(6, '0') }}</h3>
                     </div>
-                    <span class="gs-orderrow__status">
-                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
-                      {{ order.status | titlecase }}
-                    </span>
+                    <div style="display:flex;align-items:center;gap:12px;">
+                      <span class="gs-orderrow__status">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"/></svg>
+                        {{ order.status | titlecase }}
+                      </span>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                           style="width:16px;height:16px;transition:transform 0.2s;"
+                           [style.transform]="isExpanded(order.id) ? 'rotate(180deg)' : 'rotate(0deg)'">
+                        <polyline points="6 9 12 15 18 9"/>
+                      </svg>
+                    </div>
                   </div>
+
+                  <!-- Order meta (date / total / address) -->
                   <div class="gs-orderrow__foot">
                     <div style="font-family:var(--font-body);font-size:14px;color:var(--fg-muted);">
                       {{ order.created_at | date:'mediumDate' }} &nbsp;·&nbsp;
+                      {{ order.items?.length || 0 }} item{{ (order.items?.length || 0) !== 1 ? 's' : '' }} &nbsp;·&nbsp;
                       Total: <strong style="color:var(--fg-default);font-family:var(--font-display);">${{ order.total_amount.toFixed(2) }}</strong>
                     </div>
-                    <div style="font-family:var(--font-body);font-size:13px;color:var(--fg-muted);">{{ order.shipping_address }}</div>
+                    @if (order.shipping_address) {
+                      <div style="font-family:var(--font-body);font-size:13px;color:var(--fg-muted);">{{ order.shipping_address }}</div>
+                    }
                   </div>
+
+                  <!-- Expanded: product list -->
+                  @if (isExpanded(order.id) && order.items?.length) {
+                    <div style="border-top:1px solid rgba(0,0,0,0.08);margin-top:12px;padding-top:16px;display:flex;flex-direction:column;gap:12px;">
+                      @for (item of order.items; track item.id) {
+                        <div style="display:flex;align-items:center;gap:16px;">
+                          <img
+                            [src]="item.image_url"
+                            [alt]="item.name"
+                            style="width:56px;height:56px;object-fit:cover;border-radius:8px;background:#eee;flex-shrink:0;"
+                          >
+                          <div style="flex:1;min-width:0;">
+                            <div style="font-family:var(--font-body);font-size:14px;font-weight:600;color:var(--fg-default);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                              {{ item.name }}
+                            </div>
+                            <div style="font-family:var(--font-body);font-size:13px;color:var(--fg-muted);margin-top:2px;">
+                              Qty: {{ item.quantity }} &nbsp;·&nbsp; ${{ item.unit_price.toFixed(2) }} each
+                            </div>
+                          </div>
+                          <div style="font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--fg-default);flex-shrink:0;">
+                            ${{ item.subtotal.toFixed(2) }}
+                          </div>
+                        </div>
+                      }
+                    </div>
+                  }
                 </div>
               }
             } @else {

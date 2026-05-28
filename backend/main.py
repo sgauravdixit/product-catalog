@@ -491,6 +491,7 @@ async def get_order_detail(order_id: int):
 
 @app.get("/orders/{user_id}")
 async def get_user_orders(user_id: int):
+    logger.info("GET /orders/%s — fetching orders with items", user_id)
     conn = get_connection()
     try:
         cursor = conn.cursor()
@@ -499,17 +500,44 @@ async def get_user_orders(user_id: int):
             " FROM Orders WHERE user_id = ? ORDER BY created_at DESC",
             user_id,
         )
-        return [
-            {
-                "id": r[0],
-                "total_amount": float(r[1]),
-                "shipping_address": r[2],
-                "status": r[3],
-                "created_at": r[4].isoformat() if r[4] else None,
-            }
-            for r in cursor.fetchall()
-        ]
+        orders = cursor.fetchall()
+        logger.info("Found %d orders for user %s", len(orders), user_id)
+        result = []
+        for order in orders:
+            order_id = order[0]
+            cursor.execute(
+                """
+                SELECT oi.id, oi.product_id, oi.quantity, oi.unit_price,
+                       p.name, p.image_url
+                FROM Order_Items oi
+                JOIN Products p ON oi.product_id = p.id
+                WHERE oi.order_id = ?
+                """,
+                order_id,
+            )
+            items = [
+                {
+                    "id": r[0],
+                    "product_id": r[1],
+                    "quantity": r[2],
+                    "unit_price": float(r[3]),
+                    "name": r[4],
+                    "image_url": r[5],
+                    "subtotal": round(float(r[3]) * r[2], 2),
+                }
+                for r in cursor.fetchall()
+            ]
+            result.append({
+                "id": order[0],
+                "total_amount": float(order[1]),
+                "shipping_address": order[2],
+                "status": order[3],
+                "created_at": order[4].isoformat() if order[4] else None,
+                "items": items,
+            })
+        return result
     except Exception as e:
+        logger.error("Error fetching orders for user %s: %s", user_id, e, exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
@@ -517,10 +545,12 @@ async def get_user_orders(user_id: int):
 
 @app.post("/orders/{user_id}", status_code=201)
 async def create_order(user_id: int):
+    logger.info("POST /orders/%s — starting order creation", user_id)
     conn = get_connection()
     try:
         cursor = conn.cursor()
 
+        logger.info("Fetching shipping address for user %s", user_id)
         cursor.execute(
             "SELECT address_line1, address_line2, city, state, zip_code"
             " FROM Users WHERE id = ?",
@@ -528,14 +558,19 @@ async def create_order(user_id: int):
         )
         user = cursor.fetchone()
         if not user:
+            logger.warning("User %s not found", user_id)
             raise HTTPException(status_code=404, detail="User not found")
 
+        logger.info("Fetching cart for user %s", user_id)
         cursor.execute("SELECT id FROM Cart WHERE user_id = ?", user_id)
         cart = cursor.fetchone()
         if not cart:
+            logger.warning("No cart row found for user %s", user_id)
             raise HTTPException(status_code=400, detail="Cart is empty")
         cart_id = cart[0]
+        logger.info("Found cart_id=%s for user %s", cart_id, user_id)
 
+        logger.info("Fetching cart items for cart_id=%s", cart_id)
         cursor.execute(
             """
             SELECT ci.product_id, ci.quantity, p.price
@@ -547,12 +582,16 @@ async def create_order(user_id: int):
         )
         cart_items = cursor.fetchall()
         if not cart_items:
+            logger.warning("Cart %s has no items for user %s", cart_id, user_id)
             raise HTTPException(status_code=400, detail="Cart is empty")
+        logger.info("Cart %s has %d items", cart_id, len(cart_items))
 
         total = round(sum(float(r[2]) * r[1] for r in cart_items), 2)
         addr_parts = [p for p in [user[0], user[1], user[2], user[3], user[4]] if p]
-        shipping_address = ", ".join(addr_parts)
+        shipping_address = ", ".join(addr_parts) if addr_parts else "No address on file"
+        logger.info("Order total=%.2f, shipping_address=%r", total, shipping_address)
 
+        logger.info("Inserting Orders row for user %s", user_id)
         cursor.execute(
             """
             INSERT INTO Orders (user_id, total_amount, shipping_address, status)
@@ -561,23 +600,39 @@ async def create_order(user_id: int):
             """,
             user_id, total, shipping_address,
         )
-        order_id = cursor.fetchone()[0]
+        order_row = cursor.fetchone()
+        if not order_row:
+            raise RuntimeError("INSERT into Orders returned no id")
+        order_id = order_row[0]
+        logger.info("Created order_id=%s", order_id)
 
+        logger.info("Inserting %d Order_Items rows", len(cart_items))
         for product_id, quantity, price in cart_items:
+            logger.info("  Order_Item: order=%s product=%s qty=%s price=%s",
+                        order_id, product_id, quantity, float(price))
             cursor.execute(
                 "INSERT INTO Order_Items (order_id, product_id, quantity, unit_price)"
                 " VALUES (?, ?, ?, ?)",
                 order_id, product_id, quantity, float(price),
             )
 
+        logger.info("Clearing Cart_Items for cart_id=%s", cart_id)
         cursor.execute("DELETE FROM Cart_Items WHERE cart_id = ?", cart_id)
+
+        logger.info("Committing transaction for order_id=%s", order_id)
         conn.commit()
+        logger.info("Order %s committed successfully, total=%.2f", order_id, total)
 
         return {"message": "Order placed successfully", "order_id": order_id, "total": total}
     except HTTPException:
         raise
     except Exception as e:
-        conn.rollback()
+        logger.error("Error creating order for user %s: %s", user_id, e, exc_info=True)
+        try:
+            conn.rollback()
+            logger.info("Rolled back transaction for user %s", user_id)
+        except Exception as rb_err:
+            logger.error("Rollback also failed: %s", rb_err)
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         conn.close()
