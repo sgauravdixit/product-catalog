@@ -40,6 +40,28 @@ async def health():
         return {"status": "error", "database": "disconnected", "detail": str(e)}
 
 
+@app.get("/debug/schema")
+async def debug_schema():
+    """Return column names for Orders and Order_Items tables to verify schema."""
+    conn = get_connection()
+    try:
+        cursor = conn.cursor()
+        result = {}
+        for table in ("Orders", "Order_Items", "Cart", "Cart_Items", "Users", "Products"):
+            cursor.execute(
+                "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS"
+                " WHERE TABLE_NAME = ? ORDER BY ORDINAL_POSITION",
+                table,
+            )
+            result[table] = [{"column": r[0], "type": r[1]} for r in cursor.fetchall()]
+        return result
+    except Exception as e:
+        logger.error("debug_schema error: %s", e, exc_info=True)
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+
 # ---------------------------------------------------------------------------
 # Pydantic models
 # ---------------------------------------------------------------------------
