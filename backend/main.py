@@ -465,7 +465,7 @@ async def get_order_detail(order_id: int):
     try:
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT id, user_id, total_amount, shipping_address, status, created_at"
+            "SELECT id, user_id, total, shipping_address, status, created_at"
             " FROM Orders WHERE id = ?",
             order_id,
         )
@@ -474,7 +474,7 @@ async def get_order_detail(order_id: int):
             raise HTTPException(status_code=404, detail="Order not found")
         cursor.execute(
             """
-            SELECT oi.id, oi.product_id, oi.quantity, oi.unit_price,
+            SELECT oi.id, oi.product_id, oi.quantity, oi.price,
                    p.name, p.image_url
             FROM Order_Items oi
             JOIN Products p ON oi.product_id = p.id
@@ -518,7 +518,7 @@ async def get_user_orders(user_id: int):
     try:
         cursor = conn.cursor()
         cursor.execute(
-            "SELECT id, total_amount, shipping_address, status, created_at"
+            "SELECT id, total, shipping_address, status, created_at"
             " FROM Orders WHERE user_id = ? ORDER BY created_at DESC",
             user_id,
         )
@@ -529,7 +529,7 @@ async def get_user_orders(user_id: int):
             order_id = order[0]
             cursor.execute(
                 """
-                SELECT oi.id, oi.product_id, oi.quantity, oi.unit_price,
+                SELECT oi.id, oi.product_id, oi.quantity, oi.price,
                        p.name, p.image_url
                 FROM Order_Items oi
                 JOIN Products p ON oi.product_id = p.id
@@ -616,7 +616,7 @@ async def create_order(user_id: int):
         logger.info("Inserting Orders row for user %s", user_id)
         cursor.execute(
             """
-            INSERT INTO Orders (user_id, total_amount, shipping_address, status)
+            INSERT INTO Orders (user_id, total, shipping_address, status)
             OUTPUT INSERTED.id
             VALUES (?, ?, ?, 'pending')
             """,
@@ -633,7 +633,7 @@ async def create_order(user_id: int):
             logger.info("  Order_Item: order=%s product=%s qty=%s price=%s",
                         order_id, product_id, quantity, float(price))
             cursor.execute(
-                "INSERT INTO Order_Items (order_id, product_id, quantity, unit_price)"
+                "INSERT INTO Order_Items (order_id, product_id, quantity, price)"
                 " VALUES (?, ?, ?, ?)",
                 order_id, product_id, quantity, float(price),
             )
